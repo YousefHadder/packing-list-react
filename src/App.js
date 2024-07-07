@@ -5,11 +5,15 @@ export default function App() {
 	const handleAddItem = (item) => {
 		setItems(() => [...items, item]);
 	};
+	const handleDeleteItem = (itemId) => {
+		setItems(() => items.filter((items) => items.id !== itemId));
+	};
+
 	return (
 		<div className="app">
 			<Logo />
 			<Form items={items} onAddItems={handleAddItem} />
-			<PackingList items={items} setItems={setItems} />
+			<PackingList items={items} onDeleteItem={handleDeleteItem} />
 			<Stats />
 		</div>
 	);
@@ -33,8 +37,6 @@ function Form({ onAddItems }) {
 			quantity,
 			packed: false,
 		};
-
-		console.log('Adding new item: ', newItem);
 
 		onAddItems(newItem);
 
@@ -64,25 +66,29 @@ function Form({ onAddItems }) {
 		</form>
 	);
 }
-function PackingList({ items, setItems }) {
+function PackingList({ items, onDeleteItem }) {
 	return (
 		<div className="list">
 			<ul>
 				{items.map((item) => (
-					<Item item={item} key={item.id} setItems={setItems} />
+					<Item
+						item={item}
+						key={item.id}
+						onDeleteItem={onDeleteItem}
+					/>
 				))}
 			</ul>
 		</div>
 	);
 }
 
-function Item({ item }) {
+function Item({ item, onDeleteItem }) {
 	return (
 		<li>
 			<span style={item.packed ? { textDecoration: 'line-through' } : {}}>
 				{item.quantity} {' ' + item.description}
 			</span>
-			<span>{item.packed ? '✅' : '❌'}</span>
+			<button onClick={() => onDeleteItem(item.id)}>'❌'</button>
 		</li>
 	);
 }
